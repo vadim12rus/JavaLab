@@ -6,23 +6,29 @@ import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.*;
 
 public class Algorithm extends File {
-    public Algorithm(String pathFile) {
+    private final Integer m_k;
+
+    public Algorithm(String pathFile, Integer k) {
         super(pathFile);
+        this.m_k = k;
     }
 
     public void Start() {
         Scanner scanner = GetScanner();
-        Map wordMap = this.GetWordMap(scanner);
-        this.PrintWordMap(wordMap);
+        if(scanner != null)
+        {
+            Map wordMap = this.GetWordMap(scanner);
+            Map<String, Integer> sortedMap = SortByValue(wordMap);
+            this.PrintWordMap(sortedMap);
+        }
     }
     
     private Map GetWordMap(Scanner scanner) {
-        Map wordMap = new TreeMap<String, Integer>();
+        Map wordMap = new HashMap<String, Integer>();
 
         while (scanner.hasNext()) { 
             String word = scanner.next();
@@ -31,29 +37,36 @@ public class Algorithm extends File {
         }
         return wordMap;
     }
-    /*private void SortMap(Map wordMap) {
-        List list = new ArrayList(wordMap.entrySet());
-        Collections.sort(list, new Comparator() {  
-            @Override
-            public int compare(Entry e1, Entry e2) {
-                return e1.getValue().compareTo(e2.getValue());
+
+
+    private static Map<String, Integer> SortByValue(Map<String, Integer> wordMap) {
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(wordMap.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
             }
         });
-    }*/
+
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
+
 
     private void PrintWordMap(Map wordMap) {
+        int i = 0;
         for (Object entryObject : wordMap.entrySet()) {
             Entry entry = (Entry)entryObject;  
-            //System.out.println(entry.getKey() + " " + entry.getValue());
+            System.out.println(entry.getKey() + " " + entry.getValue());
+            ++i;
+            if(i == m_k) {
+                break;
+            }
         }
-
-        /*Iterator itr = wordMap.entrySet().iterator();
-        while(itr.hasNext()) {
-            Entry entry = (Entry)itr.next();  
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
-            System.out.println(key + " " + value);
-        }*/
-
     }
 }
