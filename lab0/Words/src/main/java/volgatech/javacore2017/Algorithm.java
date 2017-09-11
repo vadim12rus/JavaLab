@@ -8,6 +8,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.*;
+import java.util.Comparator;
+
+class ValueComparator implements Comparator<String> {
+
+    Map<String, Integer> base;
+    public ValueComparator(Map<String, Integer> base) {
+        this.base = base;
+    }
+  
+    public int compare(String a, String b) {
+        return  (base.get(a) >= base.get(b)) ? -1 : 1;
+    }
+}
 
 public class Algorithm extends File {
     private final Integer m_k;
@@ -22,24 +35,25 @@ public class Algorithm extends File {
         if(scanner != null)
         {
             Map wordMap = this.GetWordMap(scanner);
-            Map<String, Integer> sortedMap = SortByValue(wordMap);
-            this.PrintWordMap(sortedMap);
+            //Map<String, Integer> sortedMap = SortByValue(wordMap);
+            this.PrintWordMap(wordMap);
         }
     }
     
     private Map GetWordMap(Scanner scanner) {
         Map wordMap = new HashMap<String, Integer>();
-
+        TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(new ValueComparator(wordMap));
         while (scanner.hasNext()) { 
             String word = scanner.next();
             Integer count = (Integer)wordMap.get(word);
             wordMap.put(word, count == null ? 1 : count + 1);
         }
-        return wordMap;
+        sortedMap.putAll(wordMap);
+        return sortedMap;
     }
 
 
-    private static Map<String, Integer> SortByValue(Map<String, Integer> wordMap) {
+    /*private static Map<String, Integer> SortByValue(Map<String, Integer> wordMap) {
         List<Map.Entry<String, Integer>> list =
                 new LinkedList<Map.Entry<String, Integer>>(wordMap.entrySet());
 
@@ -55,7 +69,7 @@ public class Algorithm extends File {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
         return sortedMap;
-    }
+    }*/
 
 
     private void PrintWordMap(Map wordMap) {
